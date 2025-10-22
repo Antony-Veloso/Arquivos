@@ -1,0 +1,76 @@
+/* ============================================================
+1) CARGO — Listar cargos com salário entre 3.000 e 8.000.
+   Mostrar salário atual e o salário com 10% de aumento (cálculo), ordenar pelo salário com aumento de forma decrescente
+============================================================ */
+SELECT cargo, salariobase AS salarioAtual, (salariobase*1.1) AS salarioAumento 
+FROM CARGO
+WHERE salariobase BETWEEN 3000 AND 8000
+ORDER BY salarioAumento DESC;
+
+
+/* ============================================================
+2) CLIENTE — Clientes sem cargo (Cargo IS NULL) cujo nome contenha 'a'
+   Exibir CPF, Nome (alias).
+============================================================ */
+SELECT nome AS Nome, cpf, cargo FROM CLIENTE
+WHERE cargo IS NULL
+AND LOWER(nome) LIKE '%a%';
+
+/* ============================================================
+3) VENDEDOR — Vendedores cujo nome começa com 'J' ou 'A'.
+   Mostrar o tamanho do nome (LENGTH).
+============================================================ */
+SELECT nome, (LENGTH(nome)) AS tamanhoDoNome FROM VENDEDOR
+WHERE nome LIKE 'J%' OR nome LIKE 'A%';
+
+/* ============================================================
+4) ITEM — Exibir itens com preço > 200 mostrando preço com desconto de 10% (cálculo).
+   Ordenar pelo preço com desconto ASC.
+============================================================ */
+SELECT produto, preco, (preco*0.9) AS precoDesc FROM item
+WHERE preco > 200
+ORDER BY precoDesc;
+
+/* ============================================================
+5) PEDIDO — Pedidos realizados entre 01/10/2025 e 31/10/2025 (inclusive).
+   Mostrar a data formatada e ordenar por Data e Numero.
+============================================================ */
+SELECT numero, DATA_PEDIDO FROM PEDIDO
+WHERE DATA_PEDIDO BETWEEN DATE'2025-10-01' AND DATE'2025-10-31'
+ORDER BY numero, DATA_PEDIDO;
+
+/* ============================================================
+6) PEDIDO — CPFs distintos que fizeram pedido em outubro/2025.
+   Usar DISTINCT e ordenar o resultado.
+============================================================ */
+SELECT DISTINCT CPF
+FROM Pedido
+WHERE Data_Pedido >= DATE '2025-10-01'
+  AND Data_Pedido <  DATE '2025-11-01'
+ORDER BY CPF;
+
+
+/* ============================================================
+7) PEDIDO — Pedidos “de hoje” (comparando somente a data, ignorando hora).
+============================================================ */
+SELECT Numero, Data_Pedido
+FROM Pedido
+WHERE TRUNC(Data_Pedido) = TRUNC(SYSDATE)
+ORDER BY Numero;
+
+
+/* ============================================================
+8) PEDIDO_ITEM — Quantidade total por pedido (GROUP BY).
+   Trazer apenas pedidos cuja soma de Quantidade seja >= 3 (HAVING).
+============================================================ */
+SELECT numero, SUM(quantidade) AS totalQuantidade FROM PEDIDO_ITEM
+GROUP BY numero
+HAVING SUM(quantidade) >= 3;
+/* ============================================================
+9) PEDIDO_ITEM — Quantidade média por produto (GROUP BY) apenas para médias > 1.
+   Ordenar da maior média para a menor.
+============================================================ */
+SELECT produto, ROUND(avg(quantidade),2) AS qtdMedia FROM PEDIDO_ITEM 
+GROUP BY PRODUTO
+HAVING AVG(quantidade) > 1
+ORDER BY qtdMedia DESC;
